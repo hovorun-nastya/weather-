@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import {useFetchWeather} from "../hooks/weather/useFetchWeather";
 import SearchCityComponent from "../components/SearchCityComponent";
 import WeatherComponent from "../components/WeatherComponent";
+import {useSearchParams} from "react-router-dom";
 
 const WeatherContainer = () => {
-  const [city, setCity] = useState('Kiev')
-  const {data: weather, isLoading, refetch} = useFetchWeather(city)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const {data: weather, isLoading} = useFetchWeather(searchParams.get('q') ? searchParams.get('q') : 'Kiev')
 
-  useEffect(() => {
-    refetch()
-  }, [city])
+  const saveSearch = useCallback((value: string) => {
+    setSearchParams({q: value})
+  }, [setSearchParams])
 
   if (isLoading) {
     return <div>Data is loading...</div>
@@ -17,8 +18,8 @@ const WeatherContainer = () => {
 
   return (
     <>
-      <SearchCityComponent setCity={setCity}/>
-      <WeatherComponent weather={weather} city={city}/>
+      <SearchCityComponent saveSearch={saveSearch}/>
+      <WeatherComponent weather={weather} city={searchParams.get('q') ? searchParams.get('q') : 'Kiev'}/>
     </>
   );
 };

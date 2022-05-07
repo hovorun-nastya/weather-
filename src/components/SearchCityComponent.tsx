@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
-const SearchCityComponent = ({setCity}: any) => {
+const SearchCityComponent = ({saveSearch}: any) => {
   const [value, setValue] = useState('')
 
-  const onClick = () => {
-    setCity(value)
+  const onClick = useCallback(() => {
     setValue('')
-  }
+    saveSearch(value)
+  }, [saveSearch, setValue, value])
 
   return (
     <>
@@ -16,7 +16,7 @@ const SearchCityComponent = ({setCity}: any) => {
         placeholder={"Введіть місто"}
         onChange={(e) => setValue(e.target.value)}
       />
-      <button onClick={onClick}>
+      <button onClick={onClick} disabled={!value}>
         Show
       </button>
 
